@@ -1,0 +1,1249 @@
+<!doctype html>
+<html>
+    <head>
+      <meta charset="UTF-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <title>NexaWork - Employee Directory</title>
+      <style id="app-styles">
+        * {
+          box-sizing: border-box;
+          margin: 0;
+          padding: 0;
+          font-family: Inter, system-ui, -apple-system, sans-serif;
+        }
+        body,
+        html {
+          height: 100%;
+          background-color: #ffffff;
+          color: #0b2540;
+          overflow: hidden;
+        }
+        .app-container {
+          display: flex;
+          width: 100%;
+          height: 100vh;
+          min-height: 812px;
+        }
+        .sidebar {
+          display: flex;
+          flex-direction: column;
+        }
+        .main-content {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          background-color: #f1f5f9;
+          overflow-y: auto;
+        }
+        .top-bar {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          flex-shrink: 0;
+        }
+        .content-wrapper {
+          padding: 32px;
+          flex: 1;
+        }
+        .brand-header {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .brand-logo {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+        .brand-name {
+          font-size: 18px;
+          font-weight: 600;
+          color: #08315b;
+          letter-spacing: -0.02em;
+        }
+        .sidebar-section {
+          padding: 24px 16px;
+        }
+        .section-title {
+          font-size: 12px;
+          font-weight: 600;
+          color: #6b7280;
+          text-transform: uppercase;
+          letter-spacing: 0.05em;
+          margin-bottom: 12px;
+          padding-left: 12px;
+        }
+        .filter-list {
+          display: flex;
+          flex-direction: column;
+          gap: 4px;
+        }
+        .filter-item {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 10px 12px;
+          border-radius: 6px;
+          color: #08315b;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+        }
+        .filter-item.active {
+          background-color: #0a66ff;
+          color: #ffffff;
+        }
+        .filter-item:not(.active) .filter-count {
+          background-color: #eaf2ff;
+          color: #08315b;
+        }
+        .filter-item.active .filter-count {
+          background-color: rgba(255, 255, 255, 0.2);
+          color: #ffffff;
+        }
+        .filter-count {
+          font-size: 12px;
+          padding: 2px 8px;
+          border-radius: 12px;
+          font-weight: 600;
+        }
+        .filter-item-left {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .search-container {
+          display: flex;
+          align-items: center;
+          gap: 10px;
+        }
+        .search-input {
+          border: none;
+          background: transparent;
+          outline: none;
+          width: 100%;
+          font-size: 14px;
+          color: #0b2540;
+        }
+        .search-input::placeholder {
+          color: #6b7280;
+        }
+        .header-actions {
+          display: flex;
+          align-items: center;
+          gap: 24px;
+        }
+        .action-btn {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 36px;
+          height: 36px;
+          border-radius: 6px;
+          border: 1px solid #00000014;
+          background-color: #ffffff;
+          color: #0b2540;
+          cursor: pointer;
+        }
+        .user-profile {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .user-avatar {
+          width: 36px;
+          height: 36px;
+          border-radius: 50%;
+          object-fit: cover;
+        }
+        .user-info {
+          display: flex;
+          flex-direction: column;
+        }
+        .user-name {
+          font-size: 14px;
+          font-weight: 600;
+          color: #0b2540;
+        }
+        .user-role {
+          font-size: 12px;
+          color: #6b7280;
+        }
+        .page-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: flex-end;
+          margin-bottom: 32px;
+        }
+        .page-title {
+          font-size: 28px;
+          font-weight: 700;
+          color: #0b2540;
+          margin-bottom: 6px;
+        }
+        .page-subtitle {
+          font-size: 15px;
+          color: #6b7280;
+        }
+        .page-actions {
+          display: flex;
+          gap: 12px;
+        }
+        .btn-secondary {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 16px;
+          border-radius: 6px;
+          background-color: #ffffff;
+          border: 1px solid #00000014;
+          color: #0b2540;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+        }
+        .btn-secondary:hover {
+          background-color: #f4f8fc;
+          border-color: rgba(0, 0, 0, 0.16);
+        }
+        .btn-primary {
+          display: flex;
+          align-items: center;
+          gap: 8px;
+          padding: 10px 16px;
+          border-radius: 6px;
+          background-color: #0a66ff;
+          border: 1px solid #0a66ff;
+          color: #ffffff;
+          font-size: 14px;
+          font-weight: 500;
+          cursor: pointer;
+        }
+        .btn-primary:hover {
+          background-color: #0059e6;
+          border-color: #0059e6;
+          box-shadow: 0 8px 18px rgba(10, 102, 255, 0.3);
+        }
+        .directory-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+          gap: 24px;
+        }
+        .employee-card {
+          background-color: #ffffff;
+          border: 1px solid #00000014;
+          border-radius: 8px;
+          overflow: hidden;
+          display: flex;
+          flex-direction: column;
+        }
+        .card-top {
+          padding: 24px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          text-align: center;
+          border-bottom: 1px solid #00000014;
+          position: relative;
+        }
+        .card-avatar-wrapper {
+          position: relative;
+          margin-bottom: 16px;
+          display: inline-block;
+          line-height: 0;
+        }
+        .card-avatar {
+          width: 80px;
+          height: 80px;
+          border-radius: 50%;
+          object-fit: cover;
+          display: block;
+        }
+        .status-dot {
+          position: absolute;
+          bottom: 4px;
+          right: 4px;
+          width: 14px;
+          height: 14px;
+          background-color: #e6f8ef;
+          border: 2px solid #ffffff;
+          border-radius: 50%;
+        }
+        .status-dot.offline {
+          background-color: #6b7280;
+        }
+        .card-name {
+          font-size: 18px;
+          font-weight: 600;
+          color: #0b2540;
+          margin-bottom: 4px;
+        }
+        .card-title {
+          font-size: 14px;
+          color: #6b7280;
+          margin-bottom: 12px;
+        }
+        .department-badge {
+          display: inline-flex;
+          align-items: center;
+          padding: 4px 12px;
+          background-color: #eaf2ff;
+          color: #08315b;
+          border-radius: 12px;
+          font-size: 12px;
+          font-weight: 500;
+        }
+        .card-bottom {
+          padding: 16px 24px;
+          background-color: #ffffff;
+          display: flex;
+          flex-direction: column;
+          gap: 12px;
+        }
+        .contact-row {
+          display: flex;
+          align-items: center;
+          gap: 12px;
+        }
+        .contact-icon {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 24px;
+          height: 24px;
+          color: #6b7280;
+        }
+        .contact-text {
+          font-size: 14px;
+          color: #0b2540;
+          white-space: nowrap;
+          overflow: hidden;
+          text-overflow: ellipsis;
+        }
+        .card-actions {
+          display: flex;
+          gap: 8px;
+          padding: 16px 24px;
+          border-top: 1px solid #00000014;
+          background-color: #ffffff;
+        }
+        .card-btn {
+          flex: 1;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          gap: 6px;
+          padding: 8px;
+          font-size: 13px;
+          font-weight: 500;
+          color: #0b2540;
+          background-color: #eaf2ff;
+          border: 1px solid transparent;
+          border-radius: 6px;
+          cursor: pointer;
+        }
+        .card-btn:hover {
+          background-color: #d7e6ff;
+          box-shadow: 0 4px 10px rgba(15, 23, 42, 0.08);
+        }
+
+        .modal-backdrop[hidden] {
+          display: none;
+        }
+        .modal-backdrop {
+          position: fixed;
+          inset: 0;
+          background: rgba(15, 23, 42, 0.48);
+          display: grid;
+          place-items: center;
+          padding: 24px;
+          z-index: 1000;
+        }
+        .modal {
+          width: min(560px, 100%);
+          background: #ffffff;
+          border-radius: 12px;
+          border: 1px solid rgba(0, 0, 0, 0.08);
+          box-shadow: 0 24px 60px rgba(15, 23, 42, 0.2);
+          overflow: hidden;
+        }
+        .modal-header {
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+          padding: 16px 18px;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+          background: #ffffff;
+        }
+        .modal-title {
+          font-size: 16px;
+          font-weight: 700;
+        }
+        .modal-body {
+          padding: 18px;
+          display: grid;
+          gap: 12px;
+        }
+        .form-row {
+          display: grid;
+          gap: 6px;
+        }
+        .form-row label {
+          font-size: 12px;
+          color: #6b7280;
+          font-weight: 600;
+        }
+        .form-row input {
+          height: 40px;
+          border-radius: 10px;
+          border: 1px solid rgba(0, 0, 0, 0.12);
+          padding: 0 12px;
+          outline: none;
+        }
+        .form-row input:focus {
+          border-color: rgba(10, 102, 255, 0.55);
+          box-shadow: 0 0 0 4px rgba(10, 102, 255, 0.15);
+        }
+        .modal-footer {
+          padding: 14px 18px;
+          border-top: 1px solid rgba(0, 0, 0, 0.08);
+          display: flex;
+          justify-content: flex-end;
+          gap: 10px;
+          background: #ffffff;
+        }
+        .modal-error {
+          color: #8b1d1d;
+          background: #ffefef;
+          border: 1px solid rgba(139, 29, 29, 0.2);
+          border-radius: 10px;
+          padding: 10px 12px;
+          font-size: 13px;
+        }
+      </style>
+    </head>
+    <body>
+      <div class="app-container">
+        <!-- Sidebar -->
+        <aside
+          class="sidebar"
+          style="
+            width: 260px;
+            background-color: #f7faff;
+            border-right: 1px solid #00000014;
+          "
+        >
+          <div
+            class="brand-header"
+            style="
+              height: 72px;
+              padding: 0 24px;
+              border-bottom: 1px solid #00000014;
+            "
+          >
+            <div
+              class="brand-logo"
+              style="
+                width: 32px;
+                height: 32px;
+                background-color: #0a66ff;
+                border-radius: 6px;
+              "
+            >
+              <div
+                style="
+                  width: 20px;
+                  height: 20px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <iconify-icon
+                  icon="lucide:layers"
+                  style="font-size: 20px; color: white"
+                ></iconify-icon>
+              </div>
+            </div>
+            <span class="brand-name">NexaWork</span>
+          </div>
+
+          <div class="sidebar-section">
+            <div class="section-title">Departments</div>
+            <div class="filter-list">
+              <div class="filter-item active">
+                <div class="filter-item-left">
+                  <div
+                    style="
+                      width: 18px;
+                      height: 18px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    "
+                  >
+                    <iconify-icon
+                      icon="lucide:users"
+                      style="font-size: 18px; color: inherit"
+                    ></iconify-icon>
+                  </div>
+                  <span>All Employees</span>
+                </div>
+                <span class="filter-count">124</span>
+              </div>
+              <div class="filter-item">
+                <div class="filter-item-left">
+                  <div
+                    style="
+                      width: 18px;
+                      height: 18px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    "
+                  >
+                    <iconify-icon
+                      icon="lucide:code"
+                      style="font-size: 18px; color: inherit"
+                    ></iconify-icon>
+                  </div>
+                  <span>Engineering</span>
+                </div>
+                <span class="filter-count">42</span>
+              </div>
+              <div class="filter-item">
+                <div class="filter-item-left">
+                  <div
+                    style="
+                      width: 18px;
+                      height: 18px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    "
+                  >
+                    <iconify-icon
+                      icon="lucide:pen-tool"
+                      style="font-size: 18px; color: inherit"
+                    ></iconify-icon>
+                  </div>
+                  <span>Design</span>
+                </div>
+                <span class="filter-count">18</span>
+              </div>
+              <div class="filter-item">
+                <div class="filter-item-left">
+                  <div
+                    style="
+                      width: 18px;
+                      height: 18px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    "
+                  >
+                    <iconify-icon
+                      icon="lucide:pie-chart"
+                      style="font-size: 18px; color: inherit"
+                    ></iconify-icon>
+                  </div>
+                  <span>Marketing</span>
+                </div>
+                <span class="filter-count">24</span>
+              </div>
+              <div class="filter-item">
+                <div class="filter-item-left">
+                  <div
+                    style="
+                      width: 18px;
+                      height: 18px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    "
+                  >
+                    <iconify-icon
+                      icon="lucide:trending-up"
+                      style="font-size: 18px; color: inherit"
+                    ></iconify-icon>
+                  </div>
+                  <span>Sales</span>
+                </div>
+                <span class="filter-count">28</span>
+              </div>
+              <div class="filter-item">
+                <div class="filter-item-left">
+                  <div
+                    style="
+                      width: 18px;
+                      height: 18px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    "
+                  >
+                    <iconify-icon
+                      icon="lucide:briefcase"
+                      style="font-size: 18px; color: inherit"
+                    ></iconify-icon>
+                  </div>
+                  <span>Human Resources</span>
+                </div>
+                <span class="filter-count">6</span>
+              </div>
+              <div class="filter-item">
+                <div class="filter-item-left">
+                  <div
+                    style="
+                      width: 18px;
+                      height: 18px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    "
+                  >
+                    <iconify-icon
+                      icon="lucide:dollar-sign"
+                      style="font-size: 18px; color: inherit"
+                    ></iconify-icon>
+                  </div>
+                  <span>Finance</span>
+                </div>
+                <span class="filter-count">6</span>
+              </div>
+            </div>
+          </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+          <!-- Top Bar -->
+          <header
+            class="top-bar"
+            style="
+              height: 72px;
+              background-color: #ffffff;
+              border-bottom: 1px solid #00000014;
+              padding: 0 32px;
+            "
+          >
+            <div
+              class="search-container"
+              style="
+                background-color: #f4f8fc;
+                border: 1px solid #00000014;
+                border-radius: 8px;
+                width: 400px;
+                height: 40px;
+                padding: 0 16px;
+              "
+            >
+              <div
+                style="
+                  width: 18px;
+                  height: 18px;
+                  display: flex;
+                  align-items: center;
+                  justify-content: center;
+                "
+              >
+                <iconify-icon
+                  icon="lucide:search"
+                  style="font-size: 18px; color: #6b7280"
+                ></iconify-icon>
+              </div>
+              <input
+                type="text"
+                class="search-input"
+                placeholder="Search employees by name, title, or skills..."
+              />
+            </div>
+
+            <div class="header-actions">
+              <button class="action-btn">
+                <div
+                  style="
+                    width: 18px;
+                    height: 18px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                  "
+                >
+                  <iconify-icon
+                    icon="lucide:bell"
+                    style="font-size: 18px; color: inherit"
+                  ></iconify-icon>
+                </div>
+              </button>
+              <div class="user-profile">
+                <div class="user-info">
+                  <span class="user-name">Alex Morgan</span>
+                  <span class="user-role">Admin</span>
+                </div>
+                <img
+                  src="images/profiles/Sarah Jenkins.png"
+                  alt="User"
+                  class="user-avatar"
+                />
+              </div>
+            </div>
+          </header>
+
+          <!-- Content Area -->
+          <div class="content-wrapper">
+            <div class="page-header">
+              <div>
+                <h1 class="page-title">Employee Directory</h1>
+                <p class="page-subtitle">
+                  Manage and view all 124 employees across your organization.
+                </p>
+              </div>
+              <div class="page-actions">
+                <button class="btn-secondary">
+                  <div
+                    style="
+                      width: 16px;
+                      height: 16px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    "
+                  >
+                    <iconify-icon
+                      icon="lucide:download"
+                      style="font-size: 16px; color: inherit"
+                    ></iconify-icon>
+                  </div>
+                  Export CSV
+                </button>
+                <button class="btn-primary" id="add-employee-btn" type="button">
+                  <div
+                    style="
+                      width: 16px;
+                      height: 16px;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
+                    "
+                  >
+                    <iconify-icon
+                      icon="lucide:plus"
+                      style="font-size: 16px; color: inherit"
+                    ></iconify-icon>
+                  </div>
+                  Add Employee
+                </button>
+              </div>
+            </div>
+
+            <div class="directory-grid">
+              <!-- Employee Card 1 -->
+              <div class="employee-card">
+                <div class="card-top">
+                  <div class="card-avatar-wrapper">
+                    <img
+                      src="images/profiles/Sarah Jenkins.png"
+                      alt="Sarah Jenkins"
+                      class="card-avatar"
+                    />
+                    <div class="status-dot"></div>
+                  </div>
+                  <h3 class="card-name">Sarah Jenkins</h3>
+                  <p class="card-title">Senior Frontend Engineer</p>
+                  <span class="department-badge">Engineering</span>
+                </div>
+                <div class="card-bottom">
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:mail"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">sarah.j@nexawork.com</span>
+                  </div>
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:phone"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">+1 (555) 123-4567</span>
+                  </div>
+                </div>
+                <div class="card-actions">
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:message-square"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Message
+                  </button>
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:user"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Profile
+                  </button>
+                </div>
+              </div>
+
+              <!-- Employee Card 2 -->
+              <div class="employee-card">
+                <div class="card-top">
+                  <div class="card-avatar-wrapper">
+                    <img
+                      src="images/profiles/Marcus Chen.png"
+                      alt="Marcus Chen"
+                      class="card-avatar"
+                    />
+                    <div class="status-dot"></div>
+                  </div>
+                  <h3 class="card-name">Marcus Chen</h3>
+                  <p class="card-title">Lead Product Designer</p>
+                  <span class="department-badge">Design</span>
+                </div>
+                <div class="card-bottom">
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:mail"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">marcus.c@nexawork.com</span>
+                  </div>
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:phone"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">+1 (555) 987-6543</span>
+                  </div>
+                </div>
+                <div class="card-actions">
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:message-square"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Message
+                  </button>
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:user"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Profile
+                  </button>
+                </div>
+              </div>
+
+              <!-- Employee Card 3 -->
+              <div class="employee-card">
+                <div class="card-top">
+                  <div class="card-avatar-wrapper">
+                    <img
+                      src="images/profiles/Emily Rodriguez.png"
+                      alt="Emily Rodriguez"
+                      class="card-avatar"
+                    />
+                    <div class="status-dot offline"></div>
+                  </div>
+                  <h3 class="card-name">Emily Rodriguez</h3>
+                  <p class="card-title">Marketing Director</p>
+                  <span class="department-badge">Marketing</span>
+                </div>
+                <div class="card-bottom">
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:mail"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">emily.r@nexawork.com</span>
+                  </div>
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:phone"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">+1 (555) 456-7890</span>
+                  </div>
+                </div>
+                <div class="card-actions">
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:message-square"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Message
+                  </button>
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:user"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Profile
+                  </button>
+                </div>
+              </div>
+
+              <!-- Employee Card 4 -->
+              <div class="employee-card">
+                <div class="card-top">
+                  <div class="card-avatar-wrapper">
+                    <img
+                      src="images/profiles/James Wilson.png"
+                      alt="James Wilson"
+                      class="card-avatar"
+                    />
+                    <div class="status-dot"></div>
+                  </div>
+                  <h3 class="card-name">James Wilson</h3>
+                  <p class="card-title">Senior Account Executive</p>
+                  <span class="department-badge">Sales</span>
+                </div>
+                <div class="card-bottom">
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:mail"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">james.w@nexawork.com</span>
+                  </div>
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:phone"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">+1 (555) 234-5678</span>
+                  </div>
+                </div>
+                <div class="card-actions">
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:message-square"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Message
+                  </button>
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:user"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Profile
+                  </button>
+                </div>
+              </div>
+
+              <!-- Employee Card 5 -->
+              <div class="employee-card">
+                <div class="card-top">
+                  <div class="card-avatar-wrapper">
+                    <img
+                      src="images/profiles/Priya Patel.png"
+                      alt="Priya Patel"
+                      class="card-avatar"
+                    />
+                    <div class="status-dot"></div>
+                  </div>
+                  <h3 class="card-name">Priya Patel</h3>
+                  <p class="card-title">HR Manager</p>
+                  <span class="department-badge">Human Resources</span>
+                </div>
+                <div class="card-bottom">
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:mail"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">priya.p@nexawork.com</span>
+                  </div>
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:phone"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">+1 (555) 876-5432</span>
+                  </div>
+                </div>
+                <div class="card-actions">
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:message-square"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Message
+                  </button>
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:user"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Profile
+                  </button>
+                </div>
+              </div>
+
+              <!-- Employee Card 6 -->
+              <div class="employee-card">
+                <div class="card-top">
+                  <div class="card-avatar-wrapper">
+                    <img
+                      src="images/profiles/David Kim.png"
+                      alt="David Kim"
+                      class="card-avatar"
+                    />
+                    <div class="status-dot offline"></div>
+                  </div>
+                  <h3 class="card-name">David Kim</h3>
+                  <p class="card-title">Backend Developer</p>
+                  <span class="department-badge">Engineering</span>
+                </div>
+                <div class="card-bottom">
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:mail"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">david.k@nexawork.com</span>
+                  </div>
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:phone"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">+1 (555) 345-6789</span>
+                  </div>
+                </div>
+                <div class="card-actions">
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:message-square"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Message
+                  </button>
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:user"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Profile
+                  </button>
+                </div>
+              </div>
+
+              <!-- Employee Card 7 -->
+              <div class="employee-card">
+                <div class="card-top">
+                  <div class="card-avatar-wrapper">
+                    <img
+                      src="images/profiles/Emily Rodriguez.png"
+                      alt="Anita Thompson"
+                      class="card-avatar"
+                    />
+                    <div class="status-dot"></div>
+                  </div>
+                  <h3 class="card-name">Anita Thompson</h3>
+                  <p class="card-title">UX Researcher</p>
+                  <span class="department-badge">Design</span>
+                </div>
+                <div class="card-bottom">
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:mail"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">anita.t@nexawork.com</span>
+                  </div>
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:phone"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">+1 (555) 765-4321</span>
+                  </div>
+                </div>
+                <div class="card-actions">
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:message-square"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Message
+                  </button>
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:user"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Profile
+                  </button>
+                </div>
+              </div>
+
+              <!-- Employee Card 8 -->
+              <div class="employee-card">
+                <div class="card-top">
+                  <div class="card-avatar-wrapper">
+                    <img
+                      src="images/profiles/Marcus Chen.png"
+                      alt="Michael Chang"
+                      class="card-avatar"
+                    />
+                    <div class="status-dot"></div>
+                  </div>
+                  <h3 class="card-name">Michael Chang</h3>
+                  <p class="card-title">Financial Analyst</p>
+                  <span class="department-badge">Finance</span>
+                </div>
+                <div class="card-bottom">
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:mail"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">michael.c@nexawork.com</span>
+                  </div>
+                  <div class="contact-row">
+                    <div class="contact-icon">
+                      <iconify-icon
+                        icon="lucide:phone"
+                        style="font-size: 16px"
+                      ></iconify-icon>
+                    </div>
+                    <span class="contact-text">+1 (555) 543-2109</span>
+                  </div>
+                </div>
+                <div class="card-actions">
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:message-square"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Message
+                  </button>
+                  <button class="card-btn">
+                    <iconify-icon
+                      icon="lucide:user"
+                      style="font-size: 14px"
+                    ></iconify-icon>
+                    Profile
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </main>
+      </div>
+      <!-- Add Employee Modal -->
+      <div class="modal-backdrop" id="add-employee-modal" hidden>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="add-employee-title">
+          <div class="modal-header">
+            <div class="modal-title" id="add-employee-title">Add Employee</div>
+            <button class="action-btn" id="add-employee-close" type="button" aria-label="Close">
+              <iconify-icon icon="lucide:x" style="font-size: 18px; color: inherit"></iconify-icon>
+            </button>
+          </div>
+
+          <form id="add-employee-form">
+            <div class="modal-body">
+              <div id="add-employee-error" class="modal-error" hidden></div>
+
+              <div class="form-row">
+                <label for="emp-name">Name</label>
+                <input id="emp-name" name="name" autocomplete="name" required />
+              </div>
+              <div class="form-row">
+                <label for="emp-role">Role</label>
+                <input id="emp-role" name="role" required />
+              </div>
+              <div class="form-row">
+                <label for="emp-dept">Department</label>
+                <input id="emp-dept" name="department" required />
+              </div>
+              <div class="form-row">
+                <label for="emp-email">Email</label>
+                <input id="emp-email" name="email" type="email" autocomplete="email" required />
+              </div>
+            </div>
+
+            <div class="modal-footer">
+              <button class="btn-secondary" id="add-employee-cancel" type="button">Cancel</button>
+              <button class="btn-primary" id="add-employee-submit" type="submit">Create</button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
+      <script>
+        const modal = document.getElementById('add-employee-modal');
+
+        function openModal() {
+          modal.removeAttribute('hidden');
+        }
+
+        function closeModal() {
+          modal.setAttribute('hidden', '');
+          document.getElementById('add-employee-form').reset();
+          document.getElementById('add-employee-error').setAttribute('hidden', '');
+        }
+
+        document.getElementById('add-employee-btn').addEventListener('click', openModal);
+        document.getElementById('add-employee-close').addEventListener('click', closeModal);
+        document.getElementById('add-employee-cancel').addEventListener('click', closeModal);
+
+        modal.addEventListener('click', function (e) {
+          if (e.target === modal) closeModal();
+        });
+
+        document.getElementById('add-employee-form').addEventListener('submit', function (e) {
+          e.preventDefault();
+          const error = document.getElementById('add-employee-error');
+          const name = document.getElementById('emp-name').value.trim();
+          const role = document.getElementById('emp-role').value.trim();
+          const dept = document.getElementById('emp-dept').value.trim();
+          const email = document.getElementById('emp-email').value.trim();
+
+          if (!name || !role || !dept || !email) {
+            error.textContent = 'Please fill in all required fields.';
+            error.removeAttribute('hidden');
+            return;
+          }
+
+          error.setAttribute('hidden', '');
+          closeModal();
+        });
+      </script>
+    </body>
+  </html>

@@ -6,18 +6,16 @@ import mk.ukim.finki.backend.model.Employee;
 
 public record UpdateEmployeeDto(
         @NotBlank String name,
-        @NotBlank String lastName,
-        @NotBlank @Email String email,
+        @NotBlank String role,
         @NotBlank String department,
-        @NotBlank String phoneNumber
+        @NotBlank @Email String email
 ) {
     public static Employee toEmployee(UpdateEmployeeDto dto) {
         return Employee.builder()
                 .name(dto.name)
-                .lastName(dto.lastName)
+                .role(dto.role)
                 .email(dto.email)
                 .department(dto.department)
-                .phoneNumber(dto.phoneNumber)
                 .build();
     }
 }

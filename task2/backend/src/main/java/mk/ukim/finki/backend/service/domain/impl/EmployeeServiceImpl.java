@@ -30,7 +30,7 @@ public class EmployeeServiceImpl implements EmployeeService {
                 .orElseThrow(() -> new RuntimeException("Employee with id %d does not exist.".formatted(id)));
 
         existing.setName(e.getName());
-        existing.setLastName(e.getLastName());
+        existing.setRole(e.getRole());
         existing.setEmail(e.getEmail());
         existing.setDepartment(e.getDepartment());
         existing.setPhoneNumber(e.getPhoneNumber());

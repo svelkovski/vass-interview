@@ -5,7 +5,7 @@ import mk.ukim.finki.backend.model.Employee;
 public record DisplayEmployeeDto(
         Long id,
         String name,
-        String lastName,
+        String role,
         String email,
         String department,
         String phoneNumber
@@ -13,7 +13,7 @@ public record DisplayEmployeeDto(
     public static DisplayEmployeeDto from(Employee e) {
         return new DisplayEmployeeDto(e.getId(),
                 e.getName(),
-                e.getLastName(),
+                e.getRole(),
                 e.getEmail(),
                 e.getDepartment(),
                 e.getPhoneNumber());

@@ -7,7 +7,6 @@ import mk.ukim.finki.backend.model.dto.DisplayEmployeeDto;
 import mk.ukim.finki.backend.model.dto.UpdateEmployeeDto;
 import mk.ukim.finki.backend.service.application.EmployeeApplicationService;
 import mk.ukim.finki.backend.service.domain.EmployeeService;
-import org.hibernate.sql.Update;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -28,10 +27,9 @@ public class EmployeeApplicationServiceImpl implements EmployeeApplicationServic
     public DisplayEmployeeDto create(CreateEmployeeDto e) {
         Employee emp = Employee.builder()
                 .name(e.name())
-                .lastName(e.lastName())
+                .role(e.role())
                 .email(e.email())
                 .department(e.department())
-                .phoneNumber(e.phoneNumber())
                 .build();
 
         return DisplayEmployeeDto.from(employeeService.create(emp));

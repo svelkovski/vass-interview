@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>NexaWork - Employee Directory</title>
-    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="/src/styles.css" />
   </head>
   <body>
     <div class="app-container">
@@ -32,7 +32,7 @@
             </button>
             <div class="user-profile">
               <img
-                src="images/profiles/Sarah Jenkins.png"
+                src="/src/assets/profiles/Sarah Jenkins.png"
                 alt="User"
                 class="user-avatar"
               />
@@ -159,7 +159,7 @@
             </div>
             <input
               type="text"
-              class="search-input"
+              class="search-input filter-input"
               placeholder="Search employees by name, title, or skills..."
             />
           </div>
@@ -179,7 +179,7 @@
                 <span class="user-role">Admin</span>
               </div>
               <img
-                src="images/profiles/Sarah Jenkins.png"
+                src="/src/assets/profiles/Sarah Jenkins.png"
                 alt="User"
                 class="user-avatar"
               />
@@ -220,11 +220,11 @@
 
           <div class="directory-grid">
             <!-- Employee Card 1 -->
-            <div class="employee-card">
+            <!-- <div class="employee-card">
               <div class="card-top">
                 <div class="card-avatar-wrapper">
                   <img
-                    src="images/profiles/Sarah Jenkins.png"
+                    src="/src/assets/profiles/Sarah Jenkins.png"
                     alt="Sarah Jenkins"
                     class="card-avatar"
                   />
@@ -270,7 +270,7 @@
                   Profile
                 </button>
               </div>
-            </div>
+            </div> -->
           </div>
         </div>
       </main>
@@ -339,7 +339,7 @@
       </div>
     </div>
 
-    <script type="text/typescript" src="app.ts"></script>
+    <script type="module" src="/src/app.ts"></script>
     <script src="https://code.iconify.design/iconify-icon/1.0.7/iconify-icon.min.js"></script>
     <script>
       const modal = document.getElementById("add-employee-modal");
@@ -369,26 +369,6 @@
       modal.addEventListener("click", function (e) {
         if (e.target === modal) closeModal();
       });
-
-      document
-        .getElementById("add-employee-form")
-        .addEventListener("submit", function (e) {
-          e.preventDefault();
-          const error = document.getElementById("add-employee-error");
-          const name = document.getElementById("emp-name").value.trim();
-          const role = document.getElementById("emp-role").value.trim();
-          const dept = document.getElementById("emp-dept").value.trim();
-          const email = document.getElementById("emp-email").value.trim();
-
-          if (!name || !role || !dept || !email) {
-            error.textContent = "Please fill in all required fields.";
-            error.removeAttribute("hidden");
-            return;
-          }
-
-          error.setAttribute("hidden", "");
-          closeModal();
-        });
     </script>
   </body>
 </html>
